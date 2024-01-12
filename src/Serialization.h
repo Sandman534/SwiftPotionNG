@@ -106,6 +106,14 @@ namespace Serialization
 	inline void RevertCallback([[maybe_unused]] SKSE::SerializationInterface* a_skse)
 	{
 		auto settings = Settings::GetSingleton();
+
+		// With persistence we will not reset existing hotkeys
+		if (settings->SPNG_HotkeyFile) {
+			logger::error("Hotkeys Persistance turned on. Settings will not be saved per character");
+			return;
+		}
+
+		// Clear Hotkeys
 		settings->LoadHotkeys();
 		logger::debug("Cleared All Hotkeys");
 	}

@@ -131,6 +131,7 @@ public:
 
 		detail::get_value(iniSettings, SPNG_Enabled, "General", "SystemEnabled");
 		detail::get_value(iniSettings, SPNG_Notifications, "General", "NotificationsEnabled");
+		detail::get_value(iniSettings, SPNG_HotkeyFile, "General", "HotkeyPersistence");
 
 		// Health Auto System
 		detail::get_value(iniSettings, Health_Restore.EffectName, "Health System", "H_EffectName");
@@ -235,6 +236,7 @@ public:
 
 		detail::set_value(iniSettings, SPNG_Enabled, "General", "SystemEnabled");
 		detail::set_value(iniSettings, SPNG_Notifications, "General", "NotificationsEnabled");
+		detail::set_value(iniSettings, SPNG_HotkeyFile, "General", "HotkeyPersistence");
 
 		// Health Auto System
 		detail::set_value(iniSettings, Health_Restore.EffectName, "Health System", "H_EffectName");
@@ -362,48 +364,50 @@ public:
 
 	void LoadHotkeyINI() 
 	{
-		constexpr auto settings_path = L"Data/SKSE/Plugins/SwiftPotionNG_Hotkeys.ini";
+		constexpr auto hotkey_path = L"Data/SKSE/Plugins/SwiftPotionNG_Hotkeys.ini";
 
 		CSimpleIniA iniHotkeys;
 		iniHotkeys.SetUnicode();
-		iniHotkeys.LoadFile(settings_path);
+		iniHotkeys.LoadFile(hotkey_path);
 
 		int idx = 0;
 		for (auto& pData : HotkeyRecords) {
-			char const *iniSection = HotkeyString(idx,"Hotkey").c_str();
-			detail::get_value(iniHotkeys, pData.EffectName, iniSection, HotkeyString(idx,"EffectName").c_str());
-			detail::get_value(iniHotkeys, pData.UseFood, iniSection, HotkeyString(idx,"UseFood").c_str());
-			detail::get_value(iniHotkeys, pData.Poison, iniSection, HotkeyString(idx,"Poison").c_str());
-			detail::get_value(iniHotkeys, pData.BestValue, iniSection, HotkeyString(idx,"BestValue").c_str());
-			detail::get_value(iniHotkeys, pData.Hotkey, iniSection, HotkeyString(idx,"Hotkey").c_str());
-			detail::get_value(iniHotkeys, pData.Modifier1, iniSection, HotkeyString(idx,"Modifier1").c_str());
-			detail::get_value(iniHotkeys, pData.Modifier2, iniSection, HotkeyString(idx,"Modifier2").c_str());
-			detail::get_value(iniHotkeys, pData.Modifier3, iniSection, HotkeyString(idx,"Modifier3").c_str());
+			std::string iniSection = HotkeyString(idx,"Hotkey");
+			detail::get_value(iniHotkeys, pData.EffectName, iniSection.c_str(), HotkeyString(idx,"EffectName").c_str());
+			detail::get_value(iniHotkeys, pData.UseFood, iniSection.c_str(), HotkeyString(idx,"UseFood").c_str());
+			detail::get_value(iniHotkeys, pData.Poison, iniSection.c_str(), HotkeyString(idx,"Poison").c_str());
+			detail::get_value(iniHotkeys, pData.BestValue, iniSection.c_str(), HotkeyString(idx,"BestValue").c_str());
+			detail::get_value(iniHotkeys, pData.Hotkey, iniSection.c_str(), HotkeyString(idx,"Hotkey").c_str());
+			detail::get_value(iniHotkeys, pData.Modifier1, iniSection.c_str(), HotkeyString(idx,"Modifier1").c_str());
+			detail::get_value(iniHotkeys, pData.Modifier2, iniSection.c_str(), HotkeyString(idx,"Modifier2").c_str());
+			detail::get_value(iniHotkeys, pData.Modifier3, iniSection.c_str(), HotkeyString(idx,"Modifier3").c_str());
 			idx++;
 		}
 	}
 
 	void SaveHotkeyINI() 
 	{
-		constexpr auto settings_path = L"Data/SKSE/Plugins/SwiftPotionNG_Hotkeys.ini";
+		constexpr auto hotkey_path = L"Data/SKSE/Plugins/SwiftPotionNG_Hotkeys.ini";
 
 		CSimpleIniA iniHotkeys;
 		iniHotkeys.SetUnicode();
-		iniHotkeys.LoadFile(settings_path);
+		iniHotkeys.LoadFile(hotkey_path);
 
 		int idx = 0;
 		for (auto pData : HotkeyRecords) {
-			char const *iniSection = HotkeyString(idx,"Hotkey").c_str();
-			detail::set_value(iniHotkeys, pData.EffectName, iniSection, HotkeyString(idx,"EffectName").c_str());
-			detail::set_value(iniHotkeys, pData.UseFood, iniSection, HotkeyString(idx,"UseFood").c_str());
-			detail::set_value(iniHotkeys, pData.Poison, iniSection, HotkeyString(idx,"Poison").c_str());
-			detail::set_value(iniHotkeys, pData.BestValue, iniSection, HotkeyString(idx,"BestValue").c_str());
-			detail::set_value(iniHotkeys, pData.Hotkey, iniSection, HotkeyString(idx,"Hotkey").c_str());
-			detail::set_value(iniHotkeys, pData.Modifier1, iniSection, HotkeyString(idx,"Modifier1").c_str());
-			detail::set_value(iniHotkeys, pData.Modifier2, iniSection, HotkeyString(idx,"Modifier2").c_str());
-			detail::set_value(iniHotkeys, pData.Modifier3, iniSection, HotkeyString(idx,"Modifier3").c_str());
+			std::string iniSection = HotkeyString(idx,"Hotkey");
+			detail::set_value(iniHotkeys, pData.EffectName, iniSection.c_str(), HotkeyString(idx,"EffectName").c_str());
+			detail::set_value(iniHotkeys, pData.UseFood, iniSection.c_str(), HotkeyString(idx,"UseFood").c_str());
+			detail::set_value(iniHotkeys, pData.Poison, iniSection.c_str(), HotkeyString(idx,"Poison").c_str());
+			detail::set_value(iniHotkeys, pData.BestValue, iniSection.c_str(), HotkeyString(idx,"BestValue").c_str());
+			detail::set_value(iniHotkeys, pData.Hotkey, iniSection.c_str(), HotkeyString(idx,"Hotkey").c_str());
+			detail::set_value(iniHotkeys, pData.Modifier1, iniSection.c_str(), HotkeyString(idx,"Modifier1").c_str());
+			detail::set_value(iniHotkeys, pData.Modifier2, iniSection.c_str(), HotkeyString(idx,"Modifier2").c_str());
+			detail::set_value(iniHotkeys, pData.Modifier3, iniSection.c_str(), HotkeyString(idx,"Modifier3").c_str());
 			idx++;
 		}
+
+		iniHotkeys.SaveFile(hotkey_path);
 	}
 
 	std::string HotkeyString(int iNum, std::string sName)

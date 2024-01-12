@@ -172,6 +172,8 @@ namespace {
             return Settings::GetSingleton()->SPNG_Enabled;
         } else if (uParameter == "NO") {
             return Settings::GetSingleton()->SPNG_Notifications;
+        } else if (uParameter == "HF") {
+            return Settings::GetSingleton()->SPNG_HotkeyFile;
         } else {
             return false;
         }
