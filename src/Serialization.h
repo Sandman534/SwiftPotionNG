@@ -14,7 +14,10 @@ namespace Serialization
 		auto settings = Settings::GetSingleton();
 		auto utility = Utility::GetSingleton();
 
-		if (!a_skse->OpenRecord(SerializationType, SerializationVersion)) {
+		if (settings->SPNG_HotkeyFile) {
+			logger::error("Hotkeys Persistance turned on. Settings will not be saved per character");
+			return;
+		} else if (!a_skse->OpenRecord(SerializationType, SerializationVersion)) {
 			logger::error("Failed to open hotkey values record");
 			return;
 		} else {
@@ -50,12 +53,17 @@ namespace Serialization
 		a_skse->GetNextRecordInfo(type, version, length);
 
 		if (type != SerializationType) {
+			logger::error("Unable to load data");
 			return;
 		}
 			
-		if (version != SerializationVersion)
-		{
+		if (version != SerializationVersion) {
 			logger::error("Unable to load data");
+			return;
+		}
+
+		if (settings->SPNG_HotkeyFile) {
+			logger::error("Hotkeys Persistance turned on. Settings will not be saved per character");
 			return;
 		}
 

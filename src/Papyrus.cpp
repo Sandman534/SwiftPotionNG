@@ -184,6 +184,8 @@ namespace {
             Settings::GetSingleton()->SPNG_Enabled = aValue;
         } else if (uParameter == "NO") {
             Settings::GetSingleton()->SPNG_Notifications = aValue;
+        } else if (uParameter == "HF") {
+            Settings::GetSingleton()->SPNG_HotkeyFile = aValue;
         }
     }
 
@@ -214,7 +216,11 @@ namespace {
     }
 
     void SaveSettings(RE::StaticFunctionTag*) { 
-        Settings::GetSingleton()->SaveINI();
+        auto settings = Settings::GetSingleton();
+        settings->SaveINI();
+        if (settings->SPNG_HotkeyFile) {
+			settings->SaveHotkeyINI();
+		}
     }
 
     std::vector<std::string> GetEffectList(RE::StaticFunctionTag*, bool isNegative) {

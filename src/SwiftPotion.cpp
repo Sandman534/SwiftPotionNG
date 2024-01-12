@@ -127,7 +127,7 @@ void SwiftPotion::ProcessHotkey(const uint32_t& _code, bool _modifier1, bool _mo
 void SwiftPotion::UsePotion(RE::Actor* aPlayer, PotionData &SystemData, bool bHotkey) {
 	// Setup constants
     auto utility = Utility::GetSingleton();
-    const auto settings = Settings::GetSingleton();
+    auto settings = Settings::GetSingleton();
 
     std::string sEffect = SystemData.EffectName;
 
@@ -154,7 +154,7 @@ void SwiftPotion::UsePotion(RE::Actor* aPlayer, PotionData &SystemData, bool bHo
 void SwiftPotion::UsePotionAutoHotkey(RE::Actor* aPlayer, PotionData &RestoreData, PotionData &RegenData, PotionData &FortifyData, std::string EffectName) {
 	// Setup constants
     auto utility = Utility::GetSingleton();
-    const auto settings = Settings::GetSingleton();
+    auto settings = Settings::GetSingleton();
 
     // Get the correct effect list based on type
 	RE::AlchemyItem* restorePotion = GetPotion(aPlayer, RestoreData);

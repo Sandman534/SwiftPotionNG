@@ -114,6 +114,11 @@ public:
 
 		// Load INI Settings
 		LoadINI();
+
+		// Load Hotkeys
+		if (SPNG_HotkeyFile) {
+			LoadHotkeyINI();
+		}
 	}
 
 	void LoadINI()
@@ -355,6 +360,63 @@ public:
 		HotkeyRecords.push_back({});
 	}
 
+	void LoadHotkeyINI() 
+	{
+		constexpr auto settings_path = L"Data/SKSE/Plugins/SwiftPotionNG_Hotkeys.ini";
+
+		CSimpleIniA iniHotkeys;
+		iniHotkeys.SetUnicode();
+		iniHotkeys.LoadFile(settings_path);
+
+		int idx = 0;
+		for (auto& pData : HotkeyRecords) {
+			char const *iniSection = HotkeyString(idx,"Hotkey").c_str();
+			detail::get_value(iniHotkeys, pData.EffectName, iniSection, HotkeyString(idx,"EffectName").c_str());
+			detail::get_value(iniHotkeys, pData.UseFood, iniSection, HotkeyString(idx,"UseFood").c_str());
+			detail::get_value(iniHotkeys, pData.Poison, iniSection, HotkeyString(idx,"Poison").c_str());
+			detail::get_value(iniHotkeys, pData.BestValue, iniSection, HotkeyString(idx,"BestValue").c_str());
+			detail::get_value(iniHotkeys, pData.Hotkey, iniSection, HotkeyString(idx,"Hotkey").c_str());
+			detail::get_value(iniHotkeys, pData.Modifier1, iniSection, HotkeyString(idx,"Modifier1").c_str());
+			detail::get_value(iniHotkeys, pData.Modifier2, iniSection, HotkeyString(idx,"Modifier2").c_str());
+			detail::get_value(iniHotkeys, pData.Modifier3, iniSection, HotkeyString(idx,"Modifier3").c_str());
+			idx++;
+		}
+	}
+
+	void SaveHotkeyINI() 
+	{
+		constexpr auto settings_path = L"Data/SKSE/Plugins/SwiftPotionNG_Hotkeys.ini";
+
+		CSimpleIniA iniHotkeys;
+		iniHotkeys.SetUnicode();
+		iniHotkeys.LoadFile(settings_path);
+
+		int idx = 0;
+		for (auto pData : HotkeyRecords) {
+			char const *iniSection = HotkeyString(idx,"Hotkey").c_str();
+			detail::set_value(iniHotkeys, pData.EffectName, iniSection, HotkeyString(idx,"EffectName").c_str());
+			detail::set_value(iniHotkeys, pData.UseFood, iniSection, HotkeyString(idx,"UseFood").c_str());
+			detail::set_value(iniHotkeys, pData.Poison, iniSection, HotkeyString(idx,"Poison").c_str());
+			detail::set_value(iniHotkeys, pData.BestValue, iniSection, HotkeyString(idx,"BestValue").c_str());
+			detail::set_value(iniHotkeys, pData.Hotkey, iniSection, HotkeyString(idx,"Hotkey").c_str());
+			detail::set_value(iniHotkeys, pData.Modifier1, iniSection, HotkeyString(idx,"Modifier1").c_str());
+			detail::set_value(iniHotkeys, pData.Modifier2, iniSection, HotkeyString(idx,"Modifier2").c_str());
+			detail::set_value(iniHotkeys, pData.Modifier3, iniSection, HotkeyString(idx,"Modifier3").c_str());
+			idx++;
+		}
+	}
+
+	std::string HotkeyString(int iNum, std::string sName)
+	{
+		std::string s = std::to_string(iNum);
+
+		if (iNum < 10) {
+			return "0" + s + "_" + sName;
+		} else {
+			return s + "_" + sName;
+		}
+	}
+
 	void AddEffect(std::string sEffect, bool bNegative)
 	{
 		if (bNegative) {
@@ -411,6 +473,7 @@ public:
 
 	bool SPNG_Enabled { true };
 	bool SPNG_Notifications { true };
+	bool SPNG_HotkeyFile { false };
 
 	int SPNG_Modifier1 { 0 };
 	int SPNG_Modifier2 { 0 };
@@ -493,7 +556,6 @@ private:
 			} else {
 				a_ini.SetValue(a_section, a_key, pchar);
 			}
-			a_ini.SetValue(a_section, a_key, pchar);
 		};
 
 		static void get_value(CSimpleIniA& a_ini, float& a_value, const char* a_section, const char* a_key)
@@ -508,25 +570,25 @@ private:
 		};
 
 		// Set Values
-		static void set_value(CSimpleIniA& a_ini, bool& a_value, const char* a_section, const char* a_key)
+		static void set_value(CSimpleIniA& a_ini, bool a_value, const char* a_section, const char* a_key)
 		{
 			a_ini.SetBoolValue(a_section, a_key, a_value);
 		};
 
-		static void set_value(CSimpleIniA& a_ini, std::string& a_value, const char* a_section, const char* a_key) 
+		static void set_value(CSimpleIniA& a_ini, std::string a_value, const char* a_section, const char* a_key) 
 		{
 			char const *pchar = a_value.c_str();
 			a_ini.SetValue(a_section, a_key, pchar);
 		};
 
-		static void set_value(CSimpleIniA& a_ini, int& a_value, const char* a_section, const char* a_key)
+		static void set_value(CSimpleIniA& a_ini, int a_value, const char* a_section, const char* a_key)
 		{
 			std::string s = std::to_string(a_value);
 			char const *pchar = s.c_str();
 			a_ini.SetValue(a_section, a_key, pchar);
 		};
 
-		static void set_value(CSimpleIniA& a_ini, float& a_value, const char* a_section, const char* a_key)
+		static void set_value(CSimpleIniA& a_ini, float a_value, const char* a_section, const char* a_key)
 		{
 			std::string s = std::to_string(a_value);
 			char const *pchar = s.c_str();
