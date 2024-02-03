@@ -3,14 +3,11 @@
 
 class Utility {
 public:
-    RE::BGSListForm* SPNG_EffectList;
-
-    RE::TESCondition* IsVampireConditions;
-    RE::TESCondition* IsWerewolfConditions;
+    RE::TESRace* raceVampireLord;
+    RE::TESRace* raceWerewolf;
+    RE::BGSPerk* Undeath_LichPerk;
 
     RE::TESQuest* BrawlQuest;
-
-    RE::BGSPerk* Undeath_LichPerk;
 
     RE::BGSKeyword* positiveKeyword;
     RE::BGSKeyword* negativeKeyword;
@@ -41,11 +38,10 @@ public:
     }
 
     static void ShowNotification(std::string msg, bool messageBox = false) {
-        if (messageBox) {
+        if (messageBox)
             RE::DebugMessageBox(msg.c_str());
-        } else {
+        else
             RE::DebugNotification(msg.c_str());
-        }
     }
 
     static void StopperCheck(RE::AlchemyItem* pPotion) {
@@ -55,66 +51,62 @@ public:
             //settings->AddEffect(eEffect->baseEffect->GetFullName(), eEffect->IsHostile());
 
 		    // Health
-		    if (stricmp(eEffect->baseEffect->GetFullName(),settings->Health_Restore.EffectName.c_str()) == 0 && settings->Health_Restore.Stopper) {
+		    if (stricmp(eEffect->baseEffect->GetFullName(),settings->Health_Restore.EffectName.c_str()) == 0 && settings->Health_Restore.Stopper)
 			    settings->Health_Restore.Stopper = false;
-            } else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Health_Regen.EffectName.c_str()) == 0 && settings->Health_Regen.Stopper) {
+            else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Health_Regen.EffectName.c_str()) == 0 && settings->Health_Regen.Stopper)
 			    settings->Health_Regen.Stopper = false;
-		    } else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Health_Fortify.EffectName.c_str()) == 0 && settings->Health_Fortify.Stopper) {
+		    else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Health_Fortify.EffectName.c_str()) == 0 && settings->Health_Fortify.Stopper)
 			    settings->Health_Fortify.Stopper = false;
 
 		    // Magicka
-		    } else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Magicka_Restore.EffectName.c_str()) == 0 && settings->Magicka_Restore.Stopper){
+		    else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Magicka_Restore.EffectName.c_str()) == 0 && settings->Magicka_Restore.Stopper)
 			    settings->Magicka_Restore.Stopper = false;
-		    } else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Magicka_Regen.EffectName.c_str()) == 0 && settings->Magicka_Regen.Stopper) {
+		    else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Magicka_Regen.EffectName.c_str()) == 0 && settings->Magicka_Regen.Stopper)
 			    settings->Magicka_Regen.Stopper = false;
-		    } else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Magicka_Fortify.EffectName.c_str()) == 0 && settings->Magicka_Fortify.Stopper) {
+		    else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Magicka_Fortify.EffectName.c_str()) == 0 && settings->Magicka_Fortify.Stopper)
 			    settings->Magicka_Fortify.Stopper = false;
 
 		    // Stamina
-		    } else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Stamina_Restore.EffectName.c_str()) == 0 && settings->Stamina_Restore.Stopper) {
+		    else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Stamina_Restore.EffectName.c_str()) == 0 && settings->Stamina_Restore.Stopper)
 			    settings->Stamina_Restore.Stopper = false;
-		    } else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Stamina_Regen.EffectName.c_str()) == 0 && settings->Stamina_Regen.Stopper) {
+		    else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Stamina_Regen.EffectName.c_str()) == 0 && settings->Stamina_Regen.Stopper)
 			    settings->Stamina_Regen.Stopper = false;
-		    } else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Stamina_Fortify.EffectName.c_str()) == 0 && settings->Stamina_Fortify.Stopper) {
+		    else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Stamina_Fortify.EffectName.c_str()) == 0 && settings->Stamina_Fortify.Stopper)
 			    settings->Stamina_Fortify.Stopper = false;
 
             // Other Effects
-		    } else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Cure_Disease.EffectName.c_str()) == 0 && settings->Cure_Disease.Stopper) {
+		    else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Cure_Disease.EffectName.c_str()) == 0 && settings->Cure_Disease.Stopper)
 			    settings->Stamina_Restore.Stopper = false;
-		    } else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Cure_Poison.EffectName.c_str()) == 0 && settings->Cure_Poison.Stopper) {
+		    else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Cure_Poison.EffectName.c_str()) == 0 && settings->Cure_Poison.Stopper)
 			    settings->Stamina_Regen.Stopper = false;
-            }
         };
     }
 
     // Player checks
     static bool PlayerIsWerewolf() {
-        auto util = Utility::GetSingleton();
-        return util->IsWerewolfConditions->IsTrue(util->GetPlayer(), nullptr);
+        auto utility = Utility::GetSingleton();
+        return utility->GetPlayer()->GetRace() == utility->raceWerewolf;
     }
 
-    static bool PlayerIsVampire() {
-        auto util = Utility::GetSingleton();
-        return util->IsVampireConditions->IsTrue(GetPlayer(), nullptr);
+    static bool PlayerIsVampireLord() {
+        auto utility = Utility::GetSingleton();
+        return utility->GetPlayer()->GetRace() == utility->raceVampireLord;
     }
 
     static bool PlayerIsLich() {
-        auto util = Utility::GetSingleton();
-        if (util->Undeath_LichPerk) {
-            return GetPlayer()->HasPerk(util->Undeath_LichPerk);
-        } else {
+        auto utility = Utility::GetSingleton();
+        if (utility->Undeath_LichPerk)
+            return GetPlayer()->HasPerk(utility->Undeath_LichPerk);
+        else
             return false;
-        }
     }
 
     static bool IsPlayerInBrawl() {
-        auto util = Utility::GetSingleton();
-
-        if (util->BrawlQuest->currentStage <= 0 || util->BrawlQuest->currentStage >= 250) {
+        auto utility = Utility::GetSingleton();
+        if (utility->BrawlQuest->currentStage <= 0 || utility->BrawlQuest->currentStage >= 250)
             return false;
-        } else {
+        else
             return true;
-        }
     }
 
     static bool IsPlayerInDialogue() {
@@ -128,13 +120,12 @@ public:
 
     static float GetPlayerAttribute(int iAttribute) {
         RE::ActorValue workingValue;
-        if (iAttribute == 0) {
+        if (iAttribute == 0)
             workingValue = RE::ActorValue::kHealth;
-        } else if (iAttribute == 1) {
+        else if (iAttribute == 1)
             workingValue = RE::ActorValue::kMagicka;
-        } else {
+        else
             workingValue = RE::ActorValue::kStamina;
-        }
 
         return GetPlayer()->AsActorValueOwner()->GetActorValue(workingValue) / (GetPlayer()->AsActorValueOwner()->GetPermanentActorValue(workingValue) +
             GetPlayer()->As<RE::Actor>()->GetActorValueModifier(RE::ACTOR_VALUE_MODIFIER::kTemporary, workingValue));
@@ -142,13 +133,12 @@ public:
 
     static float GetPlayerDifference(int iAttribute) {
         RE::ActorValue workingValue;
-        if (iAttribute == 0) {
+        if (iAttribute == 0)
             workingValue = RE::ActorValue::kHealth;
-        } else if (iAttribute == 1) {
+        else if (iAttribute == 1)
             workingValue = RE::ActorValue::kMagicka;
-        } else {
+        else
             workingValue = RE::ActorValue::kStamina;
-        }
 
         return (GetPlayer()->AsActorValueOwner()->GetPermanentActorValue(workingValue) +
             GetPlayer()->As<RE::Actor>()->GetActorValueModifier(RE::ACTOR_VALUE_MODIFIER::kTemporary, workingValue)) - GetPlayer()->AsActorValueOwner()->GetActorValue(workingValue);

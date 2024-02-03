@@ -114,11 +114,17 @@ public:
 
 		// Load INI Settings
 		LoadINI();
+		logger::debug("Loaded INI");
 
 		// Load Hotkeys
-		if (SPNG_HotkeyFile) {
+		if (SPNG_HotkeyFile)
 			LoadHotkeyINI();
-		}
+
+		logger::debug("Loaded Hotkey Data");
+
+		// Load Effects
+		LoadEffectINI();
+		logger::debug("Loaded Effects");
 	}
 
 	void LoadINI()
@@ -362,8 +368,7 @@ public:
 		HotkeyRecords.push_back({});
 	}
 
-	void LoadHotkeyINI() 
-	{
+	void LoadHotkeyINI() {
 		constexpr auto hotkey_path = L"Data/SKSE/Plugins/SwiftPotionNG_Hotkeys.ini";
 
 		CSimpleIniA iniHotkeys;
@@ -385,8 +390,7 @@ public:
 		}
 	}
 
-	void SaveHotkeyINI() 
-	{
+	void SaveHotkeyINI() {
 		constexpr auto hotkey_path = L"Data/SKSE/Plugins/SwiftPotionNG_Hotkeys.ini";
 
 		CSimpleIniA iniHotkeys;
@@ -408,6 +412,76 @@ public:
 		}
 
 		iniHotkeys.SaveFile(hotkey_path);
+	}
+
+	void LoadEffectINI() {
+		constexpr auto enchant_path = L"Data/SKSE/Plugins/";
+
+		std::vector<std::string> configs{};
+		std::string sfilename = "_SPNG";
+
+		for (const auto iterator = std::filesystem::directory_iterator(enchant_path); const auto& entry : iterator) {
+			if (entry.exists()) {
+				if (const auto& path = entry.path(); !path.empty() && path.extension() == ".ini") {
+					if (const auto& fileName = entry.path().string(); sfilename.empty() || fileName.rfind(sfilename) != std::string::npos) {
+						configs.push_back(fileName);
+					}
+				}
+			}
+		}
+		std::ranges::sort(configs);
+
+		if (configs.empty()) {
+			logger::debug("No .ini files with _SPNG suffix were found within the Data folder, aborting...");
+			return;
+		}
+
+		logger::info("{} matching files found", configs.size());
+		for (auto& path : configs) {
+			logger::info("Effect File : {}", path);
+
+			// Create INI object
+			CSimpleIniA iniEnch;
+			iniEnch.SetUnicode();
+			iniEnch.SetMultiKey();
+			iniEnch.SetAllowKeyOnly();
+
+			// Quit if cant read INI
+			if (const auto rc = iniEnch.LoadFile(path.c_str()); rc < 0) {
+				logger::error("\tcouldn't read INI");
+				continue;
+			}
+
+			// Get list of sections
+			std::list<CSimpleIniA::Entry> sections;
+			iniEnch.GetAllSections(sections);
+			sections.sort(CSimpleIniA::Entry::LoadOrder());
+
+			// Loop through each sectiong
+			const auto dataHandler = RE::TESDataHandler::GetSingleton();
+			for (CSimpleIniA::Entry strESP : sections) {
+				std::string esp(strESP.pItem);
+				auto index = dataHandler->GetModIndex(esp);
+		
+				// If mod is valid
+				if (index && index.value() != 0xFF) {
+					std::list<CSimpleIniA::Entry> entryList;
+					iniEnch.GetAllKeys(esp.c_str(), entryList);
+
+					// Process every key
+					for (CSimpleIniA::Entry str : entryList) {
+						// Look for effect
+						uint32_t form = std::stoi(str.pItem, nullptr, 0);
+						RE::EffectSetting* mEffect = dataHandler->LookupForm(RE::FormID(form), esp)->As<RE::EffectSetting>();
+
+						// If effect was found, add it to the list
+						if (mEffect)
+							AddEffect(mEffect->GetName(), mEffect->IsHostile());
+
+					}
+				}
+			}
+		}
 	}
 
 	std::string HotkeyString(int iNum, std::string sName)

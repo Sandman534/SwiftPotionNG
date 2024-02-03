@@ -63,8 +63,6 @@ namespace Events {
                     const auto playerControls = RE::PlayerControls::GetSingleton();
 
                     if (controlMap && playerCharacter && playerControls) {
-                        auto event = *a_event;
-
                         for (auto event = *a_event; event; event = event->next) {
                             if (event->eventType == RE::INPUT_EVENT_TYPE::kButton) {
                                 const auto button = static_cast<RE::ButtonEvent*>(event);
