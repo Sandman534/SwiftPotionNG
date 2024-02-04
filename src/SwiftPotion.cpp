@@ -17,52 +17,6 @@ std::int32_t SwiftPotion::OnUpdate() {
     return _OnUpdate();
 }
 
-void SwiftPotion::InstallMCMMenu() {
-    // Get the quest handler
-    RE::TESDataHandler* datahandler = RE::TESDataHandler::GetSingleton();
-    auto index = RE::TESDataHandler::GetSingleton()->GetModIndex("SkyUI_SE.esp");
-
-    // If SkyUI found, attempt to create registration quest
-    if (index && index.value() != 0xFF) {
-        RE::TESQuest* form = datahandler->LookupForm(RE::FormID(0x000820), "SkyUI_SE.esp")->As<RE::TESQuest>();
-        std::string scriptName = "_SPN_ConfigSkyUIScript";
-
-        if (form) {
-            // Make a copy of the SkyUI Config Menu Quest
-            RE::TESForm* questCopy = nullptr;
-            questCopy = form->CreateDuplicateForm(true, (void*)questCopy);
-
-            // Attach our MCM script to it
-            try {
-                auto* vm = RE::BSScript::Internal::VirtualMachine::GetSingleton();
-                auto* handlePolicy = vm->GetObjectHandlePolicy();
-                RE::VMHandle handle = handlePolicy->GetHandleForObject(questCopy->GetFormType(), questCopy);
-
-                if (handle) {
-                    // Create the script object
-                    RE::BSTSmartPointer<RE::BSScript::Object> objectPtr;
-                    vm->CreateObject(scriptName, objectPtr);
-                    auto* bindPolicy = vm->GetObjectBindPolicy();
-
-                    // Attempt to bind the script to the quest
-                    try {
-                        bindPolicy->BindObject(objectPtr, handle);
-                    } catch (...) {
-                        logger::info("Failed to bind to MCM Quest");
-                        return;
-                    }
-
-                    logger::info("MCM menu setup and registered");
-                } else {
-                    logger::info("Error getting quest for MCM Registration");
-                }
-            } catch (...) {
-                logger::info("Error setting up MCM Menu");
-            }
-        }
-    }
-}
-
 bool SwiftPotion::InstallUpdateHook() {
     auto& trampoline = SKSE::GetTrampoline();
     _OnUpdate = trampoline.write_call<5>(Hooks::On_Update_Hook.address(), OnUpdate);

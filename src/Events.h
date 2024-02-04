@@ -66,7 +66,8 @@ namespace Events {
                         for (auto event = *a_event; event; event = event->next) {
                             if (event->eventType == RE::INPUT_EVENT_TYPE::kButton) {
                                 const auto button = static_cast<RE::ButtonEvent*>(event);
-                                if (!button || (button->IsPressed() && !button->IsDown())) continue;
+                                if (!button || (button->IsPressed() && !button->IsDown()))
+                                    continue;
 
                                 auto device = button->device.get();
                                 auto scan_code = button->GetIDCode();
@@ -132,20 +133,17 @@ namespace Events {
 
                                 // Get settings
                                 auto settings = Settings::GetSingleton();
-                                if (!settings) return RE::BSEventNotifyControl::kContinue;
 
                                 // Modifier Key
-                                if (device == RE::INPUT_DEVICE::kKeyboard || device == RE::INPUT_DEVICE::kGamepad) {
-                                    if (scan_code == settings->SPNG_Modifier1)
-                                        isModifier1 = button->IsPressed();
-                                    else if (scan_code == settings->SPNG_Modifier2)
-                                        isModifier2 = button->IsPressed();
-                                    else if (scan_code == settings->SPNG_Modifier3)
-                                        isModifier3 = button->IsPressed();
-                                }
+                                if (scan_code == settings->SPNG_Modifier1)
+                                    isModifier1 = button->IsPressed();
+                                else if (scan_code == settings->SPNG_Modifier2)
+                                    isModifier2 = button->IsPressed();
+                                else if (scan_code == settings->SPNG_Modifier3)
+                                    isModifier3 = button->IsPressed();
 
-
-                                if ((device == RE::INPUT_DEVICE::kKeyboard || device == RE::INPUT_DEVICE::kGamepad) && !button->IsUp())
+                                // Dont activate on button up
+                                if (!button->IsUp())
                                     SwiftPotion::ProcessHotkey(scan_code, isModifier1, isModifier2, isModifier3);
                                 
                             }

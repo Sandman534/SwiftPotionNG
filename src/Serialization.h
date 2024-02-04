@@ -14,10 +14,9 @@ namespace Serialization
 		auto settings = Settings::GetSingleton();
 		auto utility = Utility::GetSingleton();
 
-		if (settings->SPNG_HotkeyFile) {
-			logger::error("Hotkeys Persistance turned on. Settings will not be saved per character");
+		if (settings->SPNG_HotkeyFile)
 			return;
-		} else if (!a_skse->OpenRecord(SerializationType, SerializationVersion)) {
+		else if (!a_skse->OpenRecord(SerializationType, SerializationVersion)) {
 			logger::error("Failed to open hotkey values record");
 			return;
 		} else {
@@ -46,6 +45,8 @@ namespace Serialization
 	inline void LoadCallback(SKSE::SerializationInterface* a_skse)
 	{
 		auto settings = Settings::GetSingleton();
+		if (settings->SPNG_HotkeyFile)
+			return;
 
 		std::uint32_t type;
 		std::uint32_t version;
