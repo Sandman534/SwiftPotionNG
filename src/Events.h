@@ -18,17 +18,15 @@ namespace Events {
         RE::BSEventNotifyControl ProcessEvent(const RE::TESContainerChangedEvent* a_event, [[maybe_unused]] RE::BSTEventSource<RE::TESContainerChangedEvent>* a_eventSource) override {
             auto utility = Utility::GetSingleton();
             
-            if (a_event->newContainer != utility->GetPlayer()->formID) {
+            if (a_event->newContainer != utility->GetPlayer()->formID)
                 return RE::BSEventNotifyControl::kContinue;
-            }
 
             const std::lock_guard<std::mutex> lock(container_mutex);
 
             auto alchemyItem = RE::TESForm::LookupByID<RE::AlchemyItem>(a_event->baseObj);
 
-            if (alchemyItem && !alchemyItem->IsFood()) {
+            if (alchemyItem && !alchemyItem->IsFood())
                 utility->StopperCheck(alchemyItem);
-            }
 
             return RE::BSEventNotifyControl::kContinue;
         }
@@ -73,11 +71,10 @@ namespace Events {
                                 auto device = button->device.get();
                                 auto scan_code = button->GetIDCode();
 
-                                if (device == RE::INPUT_DEVICE::kMouse) {
+                                if (device == RE::INPUT_DEVICE::kMouse)
                                     scan_code += 257;
-                                } else if (device == RE::INPUT_DEVICE::kGamepad) {
-                                    RE::BSWin32GamepadDevice::Key gamepadKey =
-                                        static_cast<RE::BSWin32GamepadDevice::Key>(scan_code);
+                                else if (device == RE::INPUT_DEVICE::kGamepad) {
+                                    RE::BSWin32GamepadDevice::Key gamepadKey = static_cast<RE::BSWin32GamepadDevice::Key>(scan_code);
                                     switch (gamepadKey) {
                                         case RE::BSWin32GamepadDevice::Key::kUp:
                                             scan_code = 266;
@@ -139,19 +136,17 @@ namespace Events {
 
                                 // Modifier Key
                                 if (device == RE::INPUT_DEVICE::kKeyboard || device == RE::INPUT_DEVICE::kGamepad) {
-                                    if (scan_code == settings->SPNG_Modifier1) {
+                                    if (scan_code == settings->SPNG_Modifier1)
                                         isModifier1 = button->IsPressed();
-                                    } else if (scan_code == settings->SPNG_Modifier2) {
+                                    else if (scan_code == settings->SPNG_Modifier2)
                                         isModifier2 = button->IsPressed();
-                                    } else if (scan_code == settings->SPNG_Modifier3) {
+                                    else if (scan_code == settings->SPNG_Modifier3)
                                         isModifier3 = button->IsPressed();
-                                    }
                                 }
 
 
-                                if ((device == RE::INPUT_DEVICE::kKeyboard || device == RE::INPUT_DEVICE::kGamepad) && !button->IsUp()) {
+                                if ((device == RE::INPUT_DEVICE::kKeyboard || device == RE::INPUT_DEVICE::kGamepad) && !button->IsUp())
                                     SwiftPotion::ProcessHotkey(scan_code, isModifier1, isModifier2, isModifier3);
-                                }
                                 
                             }
                         }

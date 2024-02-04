@@ -116,9 +116,11 @@ public:
 		LoadINI();
 
 		// Load Hotkeys
-		if (SPNG_HotkeyFile) {
+		if (SPNG_HotkeyFile)
 			LoadHotkeyINI();
-		}
+
+		// Load Effects
+		SetupEffects();
 	}
 
 	void LoadINI()
@@ -421,25 +423,39 @@ public:
 		}
 	}
 
-	void AddEffect(std::string sEffect, bool bNegative)
+	void SetupEffects()
 	{
-		if (bNegative) {
-			if (!(std::find(Negative_Effects.begin(), Negative_Effects.end(), sEffect) != Negative_Effects.end())) {
-				Negative_Effects.push_back(sEffect);
+		// Get Alchemy Keywords
+		const auto dataHandler = RE::TESDataHandler::GetSingleton();
+        RE::BGSKeyword* positiveKeyword = dataHandler->LookupForm(RE::FormID(0x0F8A4E), "Skyrim.esm")->As<RE::BGSKeyword>();
+        RE::BGSKeyword* negativeKeyword = dataHandler->LookupForm(RE::FormID(0x42509), "Skyrim.esm")->As<RE::BGSKeyword>();
 
-				// Sort the array
-				Negative_Effects.erase(std::ranges::remove_if(Negative_Effects, [](const std::string& str) { return str.empty(); }).begin(),Negative_Effects.end());
-				std::ranges::sort(Negative_Effects);
-			}
-		} else {
-			if (!(std::find(Positive_Effects.begin(), Positive_Effects.end(), sEffect) != Positive_Effects.end())) {
-				Positive_Effects.push_back(sEffect);
+		// Get all effects
+		auto effectList = dataHandler->GetFormArray(RE::FormType::MagicEffect);
 
-				// Sort the array
-				Positive_Effects.erase(std::ranges::remove_if(Positive_Effects, [](const std::string& str) { return str.empty(); }).begin(),Positive_Effects.end());
-				std::ranges::sort(Positive_Effects);
+		// Loop through all found factions
+		for (auto effect : effectList) {
+			RE::EffectSetting* foundEffect = effect->As<RE::EffectSetting>();
+			std::string sEffect = foundEffect->GetName();
+
+			if (foundEffect->HasKeyword(negativeKeyword)) {
+				if (!(std::find(Negative_Effects.begin(), Negative_Effects.end(), sEffect) != Negative_Effects.end())) 
+					Negative_Effects.push_back(sEffect);
+			} else if (foundEffect->HasKeyword(positiveKeyword)) {
+				if (!(std::find(Positive_Effects.begin(), Positive_Effects.end(), sEffect) != Positive_Effects.end()))
+					Positive_Effects.push_back(sEffect);
 			}
 		}
+
+		// Sort Arrays
+		Negative_Effects.erase(std::ranges::remove_if(Negative_Effects, [](const std::string& str) { return str.empty(); }).begin(),Negative_Effects.end());
+		std::ranges::sort(Negative_Effects);
+		Positive_Effects.erase(std::ranges::remove_if(Positive_Effects, [](const std::string& str) { return str.empty(); }).begin(),Positive_Effects.end());
+		std::ranges::sort(Positive_Effects);
+
+		// Debug
+		logger::debug("Found {} Positive Effects", Positive_Effects.size());
+		logger::debug("Found {} Negative Effects", Negative_Effects.size());
 	}
 
 	void DefaultAutoData(PotionData &SystemData, std::string sType, std::string sEffectName)

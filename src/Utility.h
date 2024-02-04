@@ -3,14 +3,11 @@
 
 class Utility {
 public:
-    RE::BGSListForm* SPNG_EffectList;
-
-    RE::TESCondition* IsVampireConditions;
-    RE::TESCondition* IsWerewolfConditions;
+    RE::TESRace* raceVampireLord;
+    RE::TESRace* raceWerewolf;
+    RE::BGSPerk* Undeath_LichPerk;
 
     RE::TESQuest* BrawlQuest;
-
-    RE::BGSPerk* Undeath_LichPerk;
 
     RE::BGSKeyword* positiveKeyword;
     RE::BGSKeyword* negativeKeyword;
@@ -52,8 +49,6 @@ public:
         const auto settings = Settings::GetSingleton();
 
         for (auto& eEffect : pPotion->effects) {
-            //settings->AddEffect(eEffect->baseEffect->GetFullName(), eEffect->IsHostile());
-
 		    // Health
 		    if (stricmp(eEffect->baseEffect->GetFullName(),settings->Health_Restore.EffectName.c_str()) == 0 && settings->Health_Restore.Stopper) {
 			    settings->Health_Restore.Stopper = false;
@@ -89,13 +84,13 @@ public:
 
     // Player checks
     static bool PlayerIsWerewolf() {
-        auto util = Utility::GetSingleton();
-        return util->IsWerewolfConditions->IsTrue(util->GetPlayer(), nullptr);
+        auto utility = Utility::GetSingleton();
+        return utility->GetPlayer()->GetRace() == utility->raceWerewolf;
     }
 
-    static bool PlayerIsVampire() {
-        auto util = Utility::GetSingleton();
-        return util->IsVampireConditions->IsTrue(GetPlayer(), nullptr);
+    static bool PlayerIsVampireLord() {
+        auto utility = Utility::GetSingleton();
+        return utility->GetPlayer()->GetRace() == utility->raceVampireLord;
     }
 
     static bool PlayerIsLich() {
