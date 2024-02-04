@@ -8,10 +8,8 @@
 class FormLoader {
 public:
     const std::string_view pluginSkyrim = "Skyrim.esm";
-    const std::string_view updatePluginName = "Update.esm";
-    const std::string_view dgPluginName = "Dawnguard.esm";
-    const std::string_view hfPluginName = "HearthFires.esm";
-    const std::string_view undeathPluginName = "Undeath.esp";
+    const std::string_view pluginDawnguard = "Dawnguard.esm";
+    const std::string_view pluginUndeath = "Undeath.esp";
 
     static FormLoader* GetSingleton() {
         static FormLoader formLoader;
@@ -59,7 +57,7 @@ public:
 
         // Transformation Races
         utility->raceWerewolf = dataHandler->LookupForm(RE::FormID(0x0CDD84), pluginSkyrim)->As<RE::TESRace>();
-        utility->raceVampireLord = dataHandler->LookupForm(RE::FormID(0x00283A), pluginSkyrim)->As<RE::TESRace>();
+        utility->raceVampireLord = dataHandler->LookupForm(RE::FormID(0x00283A), pluginDawnguard)->As<RE::TESRace>();
 
         // Quests
         utility->BrawlQuest = dataHandler->LookupForm(RE::FormID(0x47AE6), pluginSkyrim)->As<RE::TESQuest>();
@@ -68,8 +66,8 @@ public:
     void LoadCompatibilityForms(RE::TESDataHandler* dataHandler) {
         auto util = Utility::GetSingleton();
 
-        if (dataHandler->LookupLoadedModByName(undeathPluginName)) {
-            auto lichPerk = dataHandler->LookupForm(RE::FormID(0x3326D5), undeathPluginName);
+        if (dataHandler->LookupLoadedModByName(pluginUndeath)) {
+            auto lichPerk = dataHandler->LookupForm(RE::FormID(0x3326D5), pluginUndeath);
             if (lichPerk) {
                 util->Undeath_LichPerk = lichPerk->As<RE::BGSPerk>();
             }

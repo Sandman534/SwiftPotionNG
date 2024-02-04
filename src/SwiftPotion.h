@@ -7,6 +7,7 @@ static float lastTime;
 class SwiftPotion {
 public:
     static bool InstallUpdateHook();
+    static void InstallMCMMenu();
     static void ProcessHotkey(const uint32_t& _code, bool _modifier1, bool _modifier2, bool _modifier3);
 
 protected:

@@ -72,7 +72,7 @@ namespace Events {
                                 auto scan_code = button->GetIDCode();
 
                                 if (device == RE::INPUT_DEVICE::kMouse)
-                                    scan_code += 257;
+                                    scan_code += 256;
                                 else if (device == RE::INPUT_DEVICE::kGamepad) {
                                     RE::BSWin32GamepadDevice::Key gamepadKey = static_cast<RE::BSWin32GamepadDevice::Key>(scan_code);
                                     switch (gamepadKey) {

@@ -24,8 +24,7 @@ void SetupLog() {
     spdlog::flush_on(spdlog::level::trace);
 }
 
-void InitListener(SKSE::MessagingInterface::Message* a_msg)
-{
+void InitListener(SKSE::MessagingInterface::Message* a_msg) {
     auto settings = Settings::GetSingleton();
 
 	switch (a_msg->type) {
@@ -35,6 +34,8 @@ void InitListener(SKSE::MessagingInterface::Message* a_msg)
 	    case SKSE::MessagingInterface::kDataLoaded:
 		    FormLoader::GetSingleton()->LoadAllForms();
 		    settings->LoadSettings();
+            SwiftPotion::InstallMCMMenu();
+
 		    break;
 	}
 }
