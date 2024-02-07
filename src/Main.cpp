@@ -66,11 +66,10 @@ SKSEPluginLoad(const LoadInterface* skse) {
 	}
 
     // Papyrus
-    if (GetPapyrusInterface()->Register(SwiftPotionExtension::RegisterSwiftPotion)) {
+    if (GetPapyrusInterface()->Register(SwiftPotionExtension::RegisterSwiftPotion))
         logger::debug("Papyrus functions bound.");
-    } else {
+    else
         stl::report_and_fail("Failure to register Papyrus bindings.");
-    }
 
     logger::info("{} has finished loading.", plugin->GetName());
     return true;

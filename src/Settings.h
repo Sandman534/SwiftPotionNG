@@ -135,6 +135,10 @@ public:
 		detail::get_value(iniSettings, SPNG_Notifications, "General", "NotificationsEnabled");
 		detail::get_value(iniSettings, SPNG_HotkeyFile, "General", "HotkeyPersistence");
 
+		detail::get_value(iniSettings, SPNG_Modifier1, "General", "HokteyModifier1");
+		detail::get_value(iniSettings, SPNG_Modifier2, "General", "HokteyModifier2");
+		detail::get_value(iniSettings, SPNG_Modifier3, "General", "HokteyModifier3");
+
 		// Health Auto System
 		detail::get_value(iniSettings, Health_Restore.EffectName, "Health System", "H_EffectName");
 		detail::get_value(iniSettings, Health_Restore.UseFood, "Health System", "H_FoodUse");
@@ -239,6 +243,10 @@ public:
 		detail::set_value(iniSettings, SPNG_Enabled, "General", "SystemEnabled");
 		detail::set_value(iniSettings, SPNG_Notifications, "General", "NotificationsEnabled");
 		detail::set_value(iniSettings, SPNG_HotkeyFile, "General", "HotkeyPersistence");
+
+		detail::set_value(iniSettings, SPNG_Modifier1, "General", "HokteyModifier1");
+		detail::set_value(iniSettings, SPNG_Modifier2, "General", "HokteyModifier2");
+		detail::set_value(iniSettings, SPNG_Modifier3, "General", "HokteyModifier3");
 
 		// Health Auto System
 		detail::set_value(iniSettings, Health_Restore.EffectName, "Health System", "H_EffectName");

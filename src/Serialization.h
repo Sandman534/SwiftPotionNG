@@ -109,10 +109,8 @@ namespace Serialization
 		auto settings = Settings::GetSingleton();
 
 		// With persistence we will not reset existing hotkeys
-		if (settings->SPNG_HotkeyFile) {
-			logger::error("Hotkeys Persistance turned on. Settings will not be saved per character");
+		if (settings->SPNG_HotkeyFile)
 			return;
-		}
 
 		// Clear Hotkeys
 		settings->LoadHotkeys();
